@@ -197,12 +197,8 @@
         hands.onResults((results) => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // 添加鏡像效果
-            ctx.save();
-            ctx.scale(-1, 1);
-            ctx.translate(-canvas.width, 0);
+            // 直接繪製視訊
             ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
-            ctx.restore();
 
             const handGuide = document.getElementById('hand-position-guide');
             
@@ -260,10 +256,6 @@
                                 const centerY = (landmarks[0].y + landmarks[5].y + landmarks[9].y) / 3;
                                 
                                 // 繪製藍點
-                                ctx.save();
-                                ctx.scale(-1, 1);
-                                ctx.translate(-canvas.width, 0);
-                                
                                 ctx.beginPath();
                                 ctx.arc(
                                     centerX * canvas.width,
@@ -274,8 +266,6 @@
                                 );
                                 ctx.fillStyle = '#0000FF';
                                 ctx.fill();
-                                
-                                ctx.restore();
                             } else {
                                 notification.style.display = 'block';
                                 updateAcupointTitle('');  // 手背時清除穴位名稱
@@ -286,10 +276,6 @@
                             if (isPalmVisible) {
                                 notification.style.display = 'none';
                                 updateAcupointTitle('勞宮穴、中衝穴');
-                                
-                                ctx.save();
-                                ctx.scale(-1, 1);
-                                ctx.translate(-canvas.width, 0);
                                 
                                 // 計算穴位位置
                                 const laoGongX = (landmarks[0].x + landmarks[5].x + landmarks[9].x) / 3;
@@ -315,8 +301,6 @@
                                 ctx.arc(zhongChongX * canvas.width, zhongChongY * canvas.height, 8, 0, 2 * Math.PI);
                                 ctx.fillStyle = '#0000FF';
                                 ctx.fill();
-                                
-                                ctx.restore();
                             } else {
                                 notification.style.display = 'block';
                                 updateAcupointTitle('');
@@ -330,10 +314,6 @@
                         
                         if (isPalmVisible) {
                             notification.style.display = 'none';
-                            
-                            ctx.save();
-                            ctx.scale(-1, 1);
-                            ctx.translate(-canvas.width, 0);
                             
                             // 計算穴位位置
                             const laoGongX = (landmarks[0].x + landmarks[5].x + landmarks[9].x) / 3;
@@ -359,25 +339,20 @@
                             ctx.arc(zhongChongX * canvas.width, zhongChongY * canvas.height, 8, 0, 2 * Math.PI);
                             ctx.fillStyle = '#0000FF';
                             ctx.fill();
-                            
-                            ctx.restore();
 
-                            // 在穴位右下角添加文字
+                            // 修改文字顯示位置的計算方式
                             const textOffset = 25;
-                            const mirroredLaoGongX = canvas.width - (laoGongX * canvas.width) - textOffset;
-                            const mirroredZhongChongX = canvas.width - (zhongChongX * canvas.width) - textOffset;
-                            
                             ctx.font = '24px Arial';
                             ctx.fillStyle = '#0000FF';
                             ctx.textAlign = 'left';
                             
-                            // 繪製穴位名稱
+                            // 直接使用原始座標，不需要鏡像處理
                             ctx.fillText('勞宮穴', 
-                                mirroredLaoGongX,
+                                (laoGongX * canvas.width) + textOffset,
                                 (laoGongY * canvas.height) + textOffset
                             );
                             ctx.fillText('中衝穴', 
-                                mirroredZhongChongX,
+                                (zhongChongX * canvas.width) + textOffset,
                                 (zhongChongY * canvas.height) + textOffset
                             );
                         } else {
@@ -395,10 +370,6 @@
                 // 處理目標手的顯示
                 if (targetHand && massagingFingerTip && !isMeridianLearningMode) {
                     // 繪製食指指頭的黃點
-                    ctx.save();
-                    ctx.scale(-1, 1);
-                    ctx.translate(-canvas.width, 0);
-                    
                     ctx.beginPath();
                     ctx.arc(
                         massagingFingerTip.x * canvas.width,
@@ -409,8 +380,6 @@
                     );
                     ctx.fillStyle = '#FFFF00';
                     ctx.fill();
-                    
-                    ctx.restore();
 
                     if (showFatiguePoint && isPalmVisible) {
                         // 計算勞宮穴位置
@@ -428,24 +397,6 @@
                                 isMassaging = true;
                                 startTimer();  // 啟動計時器
                             }
-                            ctx.save();
-                            ctx.scale(-1, 1);
-                            ctx.translate(-canvas.width, 0);
-                            
-                            // 繪製一個較大的圓圈表示按摩中
-                            ctx.beginPath();
-                            ctx.arc(
-                                centerX * canvas.width,
-                                centerY * canvas.height,
-                                20,
-                                0,
-                                2 * Math.PI
-                            );
-                            ctx.strokeStyle = '#00FF00';
-                            ctx.lineWidth = 3;
-                            ctx.stroke();
-                            
-                            ctx.restore();
                         } else {
                             if (isMassaging) {
                                 isMassaging = false;
@@ -472,23 +423,6 @@
                                 isMassaging = true;
                                 startTimer();  // 啟動計時器
                             }
-                            ctx.save();
-                            ctx.scale(-1, 1);
-                            ctx.translate(-canvas.width, 0);
-                            
-                            ctx.beginPath();
-                            ctx.arc(
-                                laoGongX * canvas.width,
-                                laoGongY * canvas.height,
-                                20,
-                                0,
-                                2 * Math.PI
-                            );
-                            ctx.strokeStyle = '#00FF00';
-                            ctx.lineWidth = 3;
-                            ctx.stroke();
-                            
-                            ctx.restore();
                         } else if (checkPointsOverlap(
                             massagingFingerTip.x,
                             massagingFingerTip.y,
@@ -499,23 +433,6 @@
                                 isMassaging = true;
                                 startTimer();  // 啟動計時器
                             }
-                            ctx.save();
-                            ctx.scale(-1, 1);
-                            ctx.translate(-canvas.width, 0);
-                            
-                            ctx.beginPath();
-                            ctx.arc(
-                                zhongChongX * canvas.width,
-                                zhongChongY * canvas.height,
-                                20,
-                                0,
-                                2 * Math.PI
-                            );
-                            ctx.strokeStyle = '#00FF00';
-                            ctx.lineWidth = 3;
-                            ctx.stroke();
-                            
-                            ctx.restore();
                         } else {
                             if (isMassaging) {
                                 isMassaging = false;
@@ -556,10 +473,6 @@
                             };
 
                             // 繪製魚際穴
-                            ctx.save();
-                            ctx.scale(-1, 1);
-                            ctx.translate(-canvas.width, 0);
-                            
                             ctx.beginPath();
                             ctx.arc(yujiPoint.x * canvas.width, yujiPoint.y * canvas.height, 8, 0, 2 * Math.PI);
                             ctx.fillStyle = '#0000FF';  // 藍色
@@ -604,8 +517,6 @@
                                     }
                                 }
                             }
-                            
-                            ctx.restore();
                         } else {
                             // 手掌朝向錯誤時同時隱藏穴位和文字
                             palmNotification.style.display = 'block';
@@ -634,25 +545,14 @@
                             acupointName.style.display = 'block';
                             
                             // 繪製頭痛穴位（液門穴）
-                            ctx.save();
-                            ctx.scale(-1, 1);
-                            ctx.translate(-canvas.width, 0);
-                            
-                            // 計算液門穴位置
-                            const point13 = targetHand[13];
-                            const point18 = targetHand[18];
-                            const point14 = targetHand[14];
-                            const point17 = targetHand[17];
-
-                            // 計算兩條線的中點
-                            const yeMenPoint = {
-                                x: (point13.x + point18.x + point14.x + point17.x) / 4,
-                                y: (point13.y + point18.y + point14.y + point17.y) / 4
-                            };
-                            
-                            // 繪製藍點
                             ctx.beginPath();
-                            ctx.arc(yeMenPoint.x * canvas.width, yeMenPoint.y * canvas.height, 8, 0, 2 * Math.PI);
+                            ctx.arc(
+                                targetHand[13].x * canvas.width,
+                                targetHand[13].y * canvas.height,
+                                8,
+                                0,
+                                2 * Math.PI
+                            );
                             ctx.fillStyle = '#0000FF';
                             ctx.fill();
                             
@@ -671,7 +571,12 @@
                                 ctx.fill();
 
                                 // 檢查重合
-                                if (checkPointsOverlap(yeMenPoint.x, yeMenPoint.y, massagingFingerTip.x, massagingFingerTip.y)) {
+                                if (checkPointsOverlap(
+                                    targetHand[13].x,
+                                    targetHand[13].y,
+                                    massagingFingerTip.x,
+                                    massagingFingerTip.y
+                                )) {
                                     if (!isMassaging) {
                                         isMassaging = true;
                                         startTimer();  // 啟動計時器
@@ -679,8 +584,8 @@
                                     // 顯示按摩效果
                                     ctx.beginPath();
                                     ctx.arc(
-                                        yeMenPoint.x * canvas.width,
-                                        yeMenPoint.y * canvas.height,
+                                        targetHand[13].x * canvas.width,
+                                        targetHand[13].y * canvas.height,
                                         20,
                                         0,
                                         2 * Math.PI
@@ -695,8 +600,6 @@
                                     }
                                 }
                             }
-                            
-                            ctx.restore();
                         } else {
                             // 手背朝向錯誤時同時隱藏穴位和文字
                             palmNotification.style.display = 'block';
@@ -704,7 +607,7 @@
                         }
                     }
                 }
-                // // 修改頭痛穴位的處理邏輯
+                // 修改頭痛穴位的處理邏輯
                 // if (targetHand) {
                 //     if (activeSymptom === "頭暈穴位") {
                 //         // 檢查手背朝向
@@ -719,25 +622,14 @@
                 //             acupointName.style.display = 'block';
                             
                 //             // 繪製頭痛穴位（液門穴）
-                //             ctx.save();
-                //             ctx.scale(-1, 1);
-                //             ctx.translate(-canvas.width, 0);
-                            
-                //             // 計算液門穴位置
-                //             const point13 = targetHand[13];
-                //             const point18 = targetHand[18];
-                //             const point14 = targetHand[14];
-                //             const point17 = targetHand[17];
-
-                //             // 計算兩條線的中點
-                //             const yeMenPoint = {
-                //                 x: (point13.x + point18.x + point14.x + point17.x) / 4,
-                //                 y: (point13.y + point18.y + point14.y + point17.y) / 4
-                //             };
-                            
-                //             // 繪製藍點
                 //             ctx.beginPath();
-                //             ctx.arc(yeMenPoint.x * canvas.width, yeMenPoint.y * canvas.height, 8, 0, 2 * Math.PI);
+                //             ctx.arc(
+                //                 targetHand[13].x * canvas.width,
+                //                 targetHand[13].y * canvas.height,
+                //                 8,
+                //                 0,
+                //                 2 * Math.PI
+                //             );
                 //             ctx.fillStyle = '#0000FF';
                 //             ctx.fill();
                             
@@ -756,7 +648,12 @@
                 //                 ctx.fill();
 
                 //                 // 檢查重合
-                //                 if (checkPointsOverlap(yeMenPoint.x, yeMenPoint.y, massagingFingerTip.x, massagingFingerTip.y)) {
+                //                 if (checkPointsOverlap(
+                //                     targetHand[13].x,
+                //                     targetHand[13].y,
+                //                     massagingFingerTip.x,
+                //                     massagingFingerTip.y
+                //                 )) {
                 //                     if (!isMassaging) {
                 //                         isMassaging = true;
                 //                         startTimer();  // 啟動計時器
@@ -764,8 +661,8 @@
                 //                     // 顯示按摩效果
                 //                     ctx.beginPath();
                 //                     ctx.arc(
-                //                         yeMenPoint.x * canvas.width,
-                //                         yeMenPoint.y * canvas.height,
+                //                         targetHand[13].x * canvas.width,
+                //                         targetHand[13].y * canvas.height,
                 //                         20,
                 //                         0,
                 //                         2 * Math.PI
@@ -780,8 +677,6 @@
                 //                     }
                 //                 }
                 //             }
-                            
-                //             ctx.restore();
                 //         } else {
                 //             // 手背朝向錯誤時同時隱藏穴位和文字
                 //             palmNotification.style.display = 'block';
@@ -804,29 +699,14 @@
                             acupointName.style.display = 'block';
                             
                             // 繪製合谷穴
-                            ctx.save();
-                            ctx.scale(-1, 1);
-                            ctx.translate(-canvas.width, 0);
-                            
-                            // 計算合谷穴位置
-                            const point0 = targetHand[0];
-                            const point2 = targetHand[2];
-                            const point5 = targetHand[5];
-                            
-                            // 計算X座標：0、2、5點的中點
-                            const heGuPointX = (point0.x + point2.x + point5.x) / 3;
-                            
-                            // 計算Y座標：0、2、2、5點的中點
-                            const heGuPointY = (point0.y + point2.y + point2.y + point5.y) / 4;
-                            // 設置合谷穴位置
-                            const heGuPoint = {
-                                x: heGuPointX,
-                                y: heGuPointY
-                            };
-                            
-                            // 繪製藍點
                             ctx.beginPath();
-                            ctx.arc(heGuPoint.x * canvas.width, heGuPoint.y * canvas.height, 8, 0, 2 * Math.PI);
+                            ctx.arc(
+                                targetHand[0].x * canvas.width,
+                                targetHand[0].y * canvas.height,
+                                8,
+                                0,
+                                2 * Math.PI
+                            );
                             ctx.fillStyle = '#0000FF';
                             ctx.fill();
                             
@@ -845,7 +725,12 @@
                                 ctx.fill();
 
                                 // 檢查重合
-                                if (checkPointsOverlap(heGuPoint.x, heGuPoint.y, massagingFingerTip.x, massagingFingerTip.y)) {
+                                if (checkPointsOverlap(
+                                    targetHand[0].x,
+                                    targetHand[0].y,
+                                    massagingFingerTip.x,
+                                    massagingFingerTip.y
+                                )) {
                                     if (!isMassaging) {
                                         isMassaging = true;
                                         startTimer();
@@ -853,8 +738,8 @@
                                     // 顯示按摩效果
                                     ctx.beginPath();
                                     ctx.arc(
-                                        heGuPoint.x * canvas.width,
-                                        heGuPoint.y * canvas.height,
+                                        targetHand[0].x * canvas.width,
+                                        targetHand[0].y * canvas.height,
                                         20,
                                         0,
                                         2 * Math.PI
@@ -869,8 +754,6 @@
                                     }
                                 }
                             }
-                            
-                            ctx.restore();
                         } else {
                             // 手背朝向錯誤時同時隱藏穴位和文字
                             palmNotification.style.display = 'block';
@@ -900,24 +783,14 @@
                             acupointName.style.display = 'block';
                             
                             // 繪製少府穴
-                            ctx.save();
-                            ctx.scale(-1, 1);
-                            ctx.translate(-canvas.width, 0);
-                            
-                            // 計算少府穴位置（0、13、18的中點）
-                            const point0 = targetHand[0];
-                            const point13 = targetHand[13];
-                            const point18 = targetHand[18];
-                            
-                            // 計算中點
-                            const shaoFuPoint = {
-                                x: (point0.x + point13.x + point18.x) / 3,
-                                y: (point0.y + point13.y + point18.y) / 3
-                            };
-                            
-                            // 繪製藍點
                             ctx.beginPath();
-                            ctx.arc(shaoFuPoint.x * canvas.width, shaoFuPoint.y * canvas.height, 8, 0, 2 * Math.PI);
+                            ctx.arc(
+                                targetHand[0].x * canvas.width,
+                                targetHand[0].y * canvas.height,
+                                8,
+                                0,
+                                2 * Math.PI
+                            );
                             ctx.fillStyle = '#0000FF';
                             ctx.fill();
                             
@@ -936,7 +809,12 @@
                                 ctx.fill();
 
                                 // 檢查重合
-                                if (checkPointsOverlap(shaoFuPoint.x, shaoFuPoint.y, massagingFingerTip.x, massagingFingerTip.y)) {
+                                if (checkPointsOverlap(
+                                    targetHand[0].x,
+                                    targetHand[0].y,
+                                    massagingFingerTip.x,
+                                    massagingFingerTip.y
+                                )) {
                                     if (!isMassaging) {
                                         isMassaging = true;
                                         startTimer();
@@ -944,8 +822,8 @@
                                     // 顯示按摩效果
                                     ctx.beginPath();
                                     ctx.arc(
-                                        shaoFuPoint.x * canvas.width,
-                                        shaoFuPoint.y * canvas.height,
+                                        targetHand[0].x * canvas.width,
+                                        targetHand[0].y * canvas.height,
                                         20,
                                         0,
                                         2 * Math.PI
@@ -960,8 +838,6 @@
                                     }
                                 }
                             }
-                            
-                            ctx.restore();
                         } else {
                             // 手掌朝向錯誤時同時隱藏穴位和文字
                             palmNotification.style.display = 'block';
@@ -978,33 +854,22 @@
             }
         });
 
-        // 修改相機初始化和視訊處理部分
+        // ===== 相機初始化 =====
         async function startCamera() {
             try {
-                setupCanvas();  // 先設定 canvas 尺寸
+                setupCanvas();
 
-                // 指定相機配置
-                const constraints = {
-                    video: {
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 },
-                        facingMode: 'user'  // 使用前置相機
-                    }
-                };
-
-                // 先獲取視訊流
-                const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                video.srcObject = stream;
+                // 設置視訊元素屬性（iOS 支援）
+                video.setAttribute('playsinline', '');
+                video.setAttribute('webkit-playsinline', '');
+                video.setAttribute('autoplay', '');
+                video.setAttribute('muted', '');
                 
-                // 等待視訊元素載入完成
-                await new Promise((resolve) => {
-                    video.onloadedmetadata = () => {
-                        video.play();
-                        resolve();
-                    };
-                });
-
-                // 建立 Camera 物件來處理視訊流
+                // 設置固定尺寸
+                video.width = 1280;
+                video.height = 720;
+                
+                // 初始化 MediaPipe Camera
                 const camera = new Camera(video, {
                     onFrame: async () => {
                         await hands.send({image: video});
@@ -1012,13 +877,32 @@
                     width: 1280,
                     height: 720
                 });
-                
-                await camera.start();
-                errorMessage.style.display = 'none';
 
                 // 確保視訊元素正確顯示
-                video.style.opacity = '1';
-                video.style.transform = 'translate(-50%, -50%) scaleX(1)';
+                const maintainAspectRatio = () => {
+                    // 設置視訊元素尺寸和比例
+                    video.style.width = '100%';
+                    video.style.height = '100%';
+                    video.style.objectFit = 'cover'; // 改用 cover 以填滿容器
+                    video.style.transform = 'scaleX(-1)';
+                    
+                    // 設置 canvas 尺寸和比例
+                    const canvas = document.getElementById('output-canvas');
+                    canvas.style.width = '100%';
+                    canvas.style.height = '100%';
+                    canvas.style.objectFit = 'cover';
+                    canvas.style.transform = 'scaleX(-1)';
+                };
+
+                // 立即設置
+                maintainAspectRatio();
+                
+                // 監聽視訊大小變化
+                new ResizeObserver(maintainAspectRatio).observe(video);
+                
+                // 啟動相機
+                await camera.start();
+                errorMessage.style.display = 'none';
                 
             } catch (err) {
                 console.error('攝像頭存取錯誤:', err);
@@ -1286,25 +1170,6 @@
                 }
             });
         });
-
-        // 修改視訊元素的樣式
-        const videoStyle = `
-            #video {
-                width: 100%;
-                height: 100%;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) scaleX(1);
-                object-fit: cover;
-                border-radius: 20px;
-            }
-        `;
-
-        // 添加樣式到頁面
-        const styleSheet = document.createElement('style');
-        styleSheet.textContent = videoStyle;
-        document.head.appendChild(styleSheet);
     </script>
 </body>
 </html> 

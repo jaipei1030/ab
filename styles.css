@@ -131,16 +131,16 @@ main {
     border-radius: 30px;
     box-shadow: var(--shadow-lg);
     width: calc(100vw - 600px);
-    height: calc(100vh - 300px);  /* 保持原有高度 */
+    height: calc(100vh - 300px);
     margin: 40px 300px 40px 40px;
     position: relative;
     overflow: hidden;
 }
 
 .control-section {
-    position: fixed;  /* 改為固定定位 */
-    right: 40px;     /* 增加與即時影像的距離 */
-    bottom: 20px;    /* 距離底部的距離 */
+    position: fixed;
+    right: 40px;
+    bottom: 20px;
     width: 230px;
     padding: 15px;
     z-index: 100;
@@ -195,7 +195,7 @@ main {
 
 .options-menu {
     position: fixed;
-    right: 155px;    /* 40px(右邊距) + 115px(按鈕寬度的一半) */
+    right: 155px;
     top: 50%;
     transform: translate(50%, -50%);
     display: flex;
@@ -213,42 +213,96 @@ main {
 }
 
 .camera-container {
-    width: 1280px;
-    height: 720px;
     position: relative;
-    margin: auto;
-    transform-origin: center;
-    transform: scale(1.1);
-    max-height: calc(100% - 50px);
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    backface-visibility: hidden;  /* 防止閃爍 */
-    -webkit-backface-visibility: hidden;  /* Safari 支援 */
 }
 
 #video {
     width: 100%;
     height: 100%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scaleX(1);  /* 改回正常方向 */
-    object-fit: contain;
-    border-radius: 20px;
-    opacity: 0;  /* 保持隱藏 */
+    transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    object-fit: cover; /* 使用 cover 以填滿容器 */
 }
 
 #output-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    object-fit: cover;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* iOS 特定樣式 */
+@supports (-webkit-touch-callout: none) {
+    .camera-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    #video, #output-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+/* 確保提示和穴位名稱顯示在最上層 */
+.center-guide, 
+.acupoint-title, 
+.palm-guide,
+.timer,
+.massage-complete {
+    z-index: 3;  /* 確保這些元素在最上層 */
+}
+
+/* 調整穴位提示的樣式 */
+.acupoint-title {
     position: absolute;
-    top: 50%;
+    top: 20px;
     left: 50%;
-    transform: translate(-50%, -50%) scaleX(1);  /* 改回正常方向 */
-    object-fit: contain;
-    border-radius: 20px;
+    transform: translateX(-50%);
+    background-color: rgba(43, 45, 66, 0.9);
+    color: white;
+    padding: 12px 24px;
+    border-radius: var(--border-radius);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease;
+    display: none;
+    text-align: center;
+    pointer-events: none;
+}
+
+/* 調整手掌提示的樣式 */
+.palm-guide {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(43, 45, 66, 0.9);
+    color: white;
+    padding: 12px 24px;
+    border-radius: var(--border-radius);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease;
+    display: none;
+    text-align: center;
+    pointer-events: none;
 }
 
 .error-message {
@@ -375,27 +429,124 @@ footer {
 }
 
 @media (max-width: 768px) {
-    .content-wrapper {
-        padding: 15px;
+    body {
+        overflow: hidden;
     }
+
     .camera-section {
-        padding: 10px;
-        width: calc(100vw - 40px);
-        height: calc(100vh - 340px);
-        margin: 20px;
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+        box-shadow: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: var(--card-background);
     }
+
     .camera-container {
-        transform: scale(0.6);
-        max-height: calc(100% - 20px);
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
     }
-    .options-menu {
-        right: 120px;  /* 調整小螢幕上的位置 */
-        width: 200px;
+
+    #video {
+        width: auto; /* 讓寬度自動調整 */
+        height: 100%;
+        max-width: 100%;
+        transform: scaleX(-1);
+        -webkit-transform: scaleX(-1);
+        object-fit: contain;
     }
+
+    #output-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: auto; /* 讓寬度自動調整 */
+        height: 100%;
+        max-width: 100%;
+        transform: scaleX(-1);
+        -webkit-transform: scaleX(-1);
+        object-fit: contain;
+        z-index: 2;
+    }
+
     .control-section {
-        right: 20px;
-        bottom: 10px;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        z-index: 1000;
     }
+
+    .options-menu {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 80px;
+        max-height: 40vh;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px 20px 0 0;
+        z-index: 999;
+    }
+
+    .btn-group {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        gap: 10px;
+        padding: 0 20px;
+    }
+
+    .btn {
+        flex: 1;
+        max-width: 150px;
+        height: 45px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .acupoint-title {
+        top: 40px;
+    }
+
+    .palm-guide {
+        top: 100px;
+    }
+
+    .timer, .massage-complete {
+        top: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .symptom-list, #meridian-options {
+        padding: 20px 15px;
+        padding-bottom: calc(15px + env(safe-area-inset-bottom));
+        margin-bottom: 0;
+    }
+
     .logo {
         font-size: 2rem;
         margin-bottom: 10px;
@@ -411,6 +562,32 @@ footer {
 
     #meridian-options {
         max-width: 200px;  /* 在小螢幕上減少寬度 */
+    }
+}
+
+/* iOS 特定樣式 */
+@supports (-webkit-touch-callout: none) {
+    @media screen and (max-width: 768px) {
+        .camera-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        #video, #output-canvas {
+            width: auto;
+            height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .control-section {
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+        }
+
+        .options-menu {
+            bottom: calc(80px + env(safe-area-inset-bottom));
+        }
     }
 }
 
@@ -500,32 +677,6 @@ footer {
     align-items: center;
     text-align: center;
     pointer-events: none;  /* 讓提示文字不影響點擊事件 */
-}
-
-.acupoint-title {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(43, 45, 66, 0.9);
-    color: white;
-    padding: 12px 24px;
-    border-radius: var(--border-radius);
-    backdrop-filter: blur(8px);
-    animation: fadeIn 0.3s ease;
-    display: none;
-    text-align: center;
-}
-
-.palm-guide {
-    top: 80px !important;  /* 調整位置到上方，避免與穴位名稱重疊 */
-    background-color: rgba(43, 45, 66, 0.9);
-    color: white;
-    padding: 12px 24px;
-    border-radius: var(--border-radius);
-    backdrop-filter: blur(8px);
-    animation: fadeIn 0.3s ease;
-    pointer-events: none;
 }
 
 .timer, .massage-complete {
@@ -641,4 +792,123 @@ footer {
     margin-bottom: 10px;
     color: #333;
     font-weight: 500;
+}
+
+/* 添加媒體查詢，針對手機設備 */
+@media screen and (max-width: 768px) {
+    .camera-section {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .control-section {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-group {
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .btn {
+        flex: 1;
+        padding: 12px;
+        margin: 0;
+        font-size: 14px;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .options-menu {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 80px;
+        top: auto;
+        transform: none;
+        width: 100%;
+        max-height: 60vh;
+        border-radius: 20px 20px 0 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+    }
+
+    .symptom-list {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .symptom-list .option-btn {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+    }
+
+    #meridian-options {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .acupoint-title {
+        top: 40px;
+    }
+
+    .palm-guide {
+        top: 100px;
+    }
+
+    .timer, .massage-complete {
+        top: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+/* 針對更小螢幕的設備 */
+@media screen and (max-width: 480px) {
+    .symptom-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #meridian-options {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        font-size: 12px;
+        padding: 10px;
+    }
+}
+
+/* 處理 iOS 安全區域 */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    @media screen and (max-width: 768px) {
+        .control-section {
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+        }
+
+        .options-menu {
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+        }
+    }
 } 
